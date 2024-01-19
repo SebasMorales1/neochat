@@ -37,4 +37,33 @@ const register = async (req, res) => {
   }
 }
 
-module.exports = { register  }
+const login = async (req, res) => {
+  const { email, password } = req.body
+
+  try {
+    const user = await userModel.find({ email })
+    const failMessage = 'Invalid email or password'
+    
+    if (!user.length) 
+      return res.status(400).json({ message: failMessage })
+
+    const matchPasswords = await bcrypt.compare(password, user[0].password)
+
+    if (!matchPasswords) 
+      return res.status(400).json({ message: failMessage })
+
+    return res.json({
+      message: 'User logged',
+      user: {
+        id: user[0]._id,
+        name: user[0].name,
+        email: user[0].email
+      }
+    })
+  } catch (error) {
+    console.error(`Error when user tries login: ${error}`)
+    res.status(500).json({ message: msgError })
+  }
+}
+
+module.exports = { register, login  }

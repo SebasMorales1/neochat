@@ -1,6 +1,6 @@
 const { Router } = require('express')
 const { name, email, password, confirmPassword } = require('../validations/user.js')
-const { register } = require('../controllers/auth.js')
+const { register, login } = require('../controllers/auth.js')
 
 const router = Router()
 
@@ -11,5 +11,7 @@ router.post('/api/register',
   confirmPassword(),
   register
 )
+
+router.post('/api/login', login)
 
 module.exports = router
