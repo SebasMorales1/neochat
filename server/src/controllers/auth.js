@@ -1,5 +1,6 @@
 const userModel = require('../models/user.js')
 const hasErrors = require('../utils/hasErrors.js')
+const bcrypt = require('bcryptjs')
 
 const msgError = 'Internal Error'
 
@@ -11,10 +12,12 @@ const register = async (req, res) => {
   if (errors.length)
     return res.status(400).json({ errors })
 
+  const hashPasword = await bcrypt.hash(password, 10)
+
   const newUser = new userModel({
     name,
     email,
-    password
+    password: hashPasword
   })
 
   try {
