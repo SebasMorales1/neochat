@@ -1,4 +1,5 @@
 const { body } = require('express-validator')
+const userModel = require('../models/user.js')
 
 const name = () => (
   body('name')
@@ -14,6 +15,14 @@ const email = () => (
   .withMessage('The email is not validate')
   .exists()
   .withMessage('The email is required')
+  .custom(async (value) => {
+    const email = await userModel.find({ email: value })
+
+    if (email.length)
+      throw new Error('The email is already taken')
+
+    return true
+  })
 )
 
 const password = () => (

@@ -6,7 +6,7 @@ const user = new Schema({
     require: true,
     trim: true
   },
-  gmail: {
+  email: {
     type: String,
     require: true,
     trim: true
