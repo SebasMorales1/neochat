@@ -1,6 +1,7 @@
 const userModel = require('../models/user.js')
 const hasErrors = require('../utils/hasErrors.js')
 const bcrypt = require('bcryptjs')
+const createAccessToken = require('../utils/createAccessToken.js')
 
 const msgError = 'Internal Error'
 
@@ -21,6 +22,7 @@ const register = async (req, res) => {
   })
 
   try {
+    const token = await createAccessToken({ id: newUser._id })
     await newUser.save()
 
     res.status(200).json({ 
@@ -29,7 +31,8 @@ const register = async (req, res) => {
         id: newUser._id,
         name: newUser.name,
         email: newUser.email
-      }
+      },
+      accessToken: token
     })
   } catch (error) {
     console.error(`Error when create a new user: ${error}`)
@@ -52,13 +55,16 @@ const login = async (req, res) => {
     if (!matchPasswords) 
       return res.status(400).json({ message: failMessage })
 
+    const token = await createAccessToken(user[0]._id)
+
     return res.json({
       message: 'User logged',
       user: {
         id: user[0]._id,
         name: user[0].name,
         email: user[0].email
-      }
+      },
+      accesToken: token
     })
   } catch (error) {
     console.error(`Error when user tries login: ${error}`)
