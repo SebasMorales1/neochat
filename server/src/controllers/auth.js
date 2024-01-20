@@ -3,6 +3,7 @@ const invalidTokenModel = require('../models/invalidToken.js')
 const hasErrors = require('../utils/hasErrors.js')
 const bcrypt = require('bcryptjs')
 const createAccessToken = require('../utils/createAccessToken.js')
+const jwt = require('jsonwebtoken')
 
 const msgError = 'Internal Error'
 
@@ -86,4 +87,21 @@ const logout = async (req, res) => {
   }
 }
 
-module.exports = { register, login, logout }
+const profile = async (req, res) => {
+  const token = req.get('authorization').slice(7)
+
+  try {
+    const { id } = jwt.decode(token)
+    const user = await userModel.findById(id).select('name email')
+
+    res.json({
+      message: 'Get user data',
+      user
+    })
+  } catch (error) {
+    console.log(`Error when user tries get his data: ${error}`)
+    res.status(500).json({ message: msgError })
+  }
+}
+
+module.exports = { register, login, logout, profile }
