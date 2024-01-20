@@ -1,4 +1,5 @@
 const userModel = require('../models/user.js')
+const invalidTokenModel = require('../models/invalidToken.js')
 const hasErrors = require('../utils/hasErrors.js')
 const bcrypt = require('bcryptjs')
 const createAccessToken = require('../utils/createAccessToken.js')
@@ -72,4 +73,17 @@ const login = async (req, res) => {
   }
 }
 
-module.exports = { register, login  }
+const logout = async (req, res) => {
+  const token = req.get('authorization').slice(7)
+  const newToken = new invalidTokenModel({ token })
+
+  try {
+    await newToken.save()
+    res.json({ message: 'User logouted' })
+  } catch (error) {
+    console.log(`Error when user tries logout: ${error}`)
+    res.status(500).json({ message: msgError })
+  }
+}
+
+module.exports = { register, login, logout }
