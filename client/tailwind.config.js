@@ -7,7 +7,7 @@ export default {
   theme: {
     extend: {
       backgroundImage: {
-        emojis: `url(./src/assets/emojis-bg.png)`
+        emojis: `url(assets/emojis-bg.png)`
       }
     },
   },
