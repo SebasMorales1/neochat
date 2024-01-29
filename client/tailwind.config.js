@@ -5,7 +5,11 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        emojis: `url(./src/assets/emojis-bg.png)`
+      }
+    },
   },
   plugins: [],
 }
